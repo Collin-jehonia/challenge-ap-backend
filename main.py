@@ -198,6 +198,50 @@ def get_registrations(
     )
     return registrations
 
+# Get student records (formatted for student records page)
+@app.get("/api/students", 
+         summary="Get student records",
+         description="Returns student records with additional formatting for the student records page")
+def get_student_records(
+    search: Optional[str] = None,
+    year: Optional[str] = None,
+    programme: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    # Process year parameter if it's a string "null"
+    year_param = None
+    if year is not None:
+        if year == "null":
+            year_param = "null"  # Special value for null year
+        else:
+            try:
+                year_param = int(year)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Year must be a valid integer or 'null'")
+    
+    # Get registrations with filters
+    registrations, total = registration_repository.get_student_records(
+        db, search, year_param, programme, skip, limit
+    )
+    
+    # Format the response for the student records page
+    result = []
+    for reg in registrations:
+        result.append({
+            "id": reg.id,
+            "student_id": reg.student_id,
+            "name": f"{reg.first_name} {reg.last_name}",
+            "email": reg.email,
+            "programme": reg.programme,
+            "year": reg.academic_year,
+            "status": "Active",  # Default status
+            "secondary_school": reg.secondary_school
+        })
+    
+    return {"students": result, "total": total}
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", "8000"))
