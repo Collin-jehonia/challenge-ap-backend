@@ -10,7 +10,7 @@ from database import get_db, init_db, SessionLocal
 from models import StudentRegistration
 import schemas
 from repositories import registration_repository
-from load_data import load_mock_data  # Import the load_mock_data function
+from load_data import load_mock_data
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,7 +30,6 @@ async def lifespan(app: FastAPI):
         db.close()
         
     yield
-    # Clean up resources if needed
 
 app = FastAPI(
     title="IUM Student Registration API",
