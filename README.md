@@ -62,3 +62,59 @@ Refer to the printed challenge brief for full requirements.
 
 **Good luck!**  
 *Centre for Digital Initiatives – IUM*
+
+
+## 🚀 How to Run the Backend
+
+### Prerequisites
+- Python 3.8+ installed
+- PostgreSQL database server installed and running
+
+### Setup and Installation
+
+1. **Create a virtual environment**:
+   ```bash
+   python -m venv venv
+   ```
+
+2. **Activate the virtual environment**:
+   - On Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+   - On macOS/Linux:
+     ```bash
+     cd challenge-ap-backend 
+     source venv/bin/activate && python3 main.py
+     ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure database connection**:
+   - The application will use PostgreSQL by default
+   - Database connection settings can be modified in the `database.py` file
+
+5. **Run the application**:
+   ```bash
+   python main.py
+   ```
+
+The backend API will be available at `http://localhost:8000`.
+
+### Available API Endpoints
+
+- `GET /api/total-registrations` - Get total number of registrations
+- `GET /api/registrations-by-programme` - Get registrations grouped by programme
+- `GET /api/registrations-by-year` - Get registrations grouped by academic year
+- `GET /api/top-schools` - Get top secondary schools by student count
+- `GET /api/registrations-by-gender` - Get registrations grouped by gender
+- `GET /api/registrations` - Get detailed registration records
+- `GET /api/students` - Get formatted student records
+
+Each endpoint supports filtering by academic year (including `null` for unspecified) and programme.
+
+---
+
