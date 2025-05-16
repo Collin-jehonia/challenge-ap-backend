@@ -112,6 +112,19 @@ def get_top_schools(
     data = registration_repository.get_top_schools(db, year, programme, limit)
     return data
 
+# Get registrations by gender
+@app.get("/api/registrations-by-gender", 
+         response_model=List[Dict[str, Any]],
+         summary="Get registrations by gender",
+         description="Returns the count of registrations grouped by gender, optionally filtered by year or programme")
+def get_registrations_by_gender(
+    year: int = None,
+    programme: str = None,
+    db: Session = Depends(get_db)
+):
+    data = registration_repository.get_registrations_by_gender(db, year, programme)
+    return data
+
 # Get all registrations (with optional filters)
 @app.get("/api/registrations", 
          response_model=List[schemas.StudentRegistration],
