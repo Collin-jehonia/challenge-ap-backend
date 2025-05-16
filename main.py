@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from contextlib import asynccontextmanager
 import os
 
@@ -66,11 +66,22 @@ def read_root():
          summary="Get total registrations",
          description="Returns the total number of student registrations, optionally filtered by year or programme")
 def get_total_registrations(
-    year: int = None,
-    programme: str = None,
+    year: Optional[str] = None,
+    programme: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
-    total = registration_repository.get_total_registrations(db, year, programme)
+    # Process year parameter if it's a string "null"
+    year_param = None
+    if year is not None:
+        if year == "null":
+            year_param = "null"  # Special value for null year
+        else:
+            try:
+                year_param = int(year)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Year must be a valid integer or 'null'")
+    
+    total = registration_repository.get_total_registrations(db, year_param, programme)
     return {"total": total}
 
 # Get registrations by programme
@@ -79,11 +90,22 @@ def get_total_registrations(
          summary="Get registrations by programme",
          description="Returns the count of registrations grouped by programme, optionally filtered by year")
 def get_registrations_by_programme(
-    year: int = None, 
-    limit: int = 10, 
+    year: Optional[str] = None, 
+    limit: int = 25,  # Increased from 10 to 25 for more comprehensive visualization
     db: Session = Depends(get_db)
 ):
-    data = registration_repository.get_registrations_by_programme(db, year, limit)
+    # Process year parameter if it's a string "null"
+    year_param = None
+    if year is not None:
+        if year == "null":
+            year_param = "null"  # Special value for null year
+        else:
+            try:
+                year_param = int(year)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Year must be a valid integer or 'null'")
+    
+    data = registration_repository.get_registrations_by_programme(db, year_param, limit)
     return data
 
 # Get registrations by academic year
@@ -104,12 +126,23 @@ def get_registrations_by_year(
          summary="Get top schools",
          description="Returns the top schools by number of registrations, optionally filtered by year or programme")
 def get_top_schools(
-    year: int = None,
-    programme: str = None,
+    year: Optional[str] = None,
+    programme: Optional[str] = None,
     limit: int = 10,
     db: Session = Depends(get_db)
 ):
-    data = registration_repository.get_top_schools(db, year, programme, limit)
+    # Process year parameter if it's a string "null"
+    year_param = None
+    if year is not None:
+        if year == "null":
+            year_param = "null"  # Special value for null year
+        else:
+            try:
+                year_param = int(year)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Year must be a valid integer or 'null'")
+    
+    data = registration_repository.get_top_schools(db, year_param, programme, limit)
     return data
 
 # Get registrations by gender
@@ -118,11 +151,22 @@ def get_top_schools(
          summary="Get registrations by gender",
          description="Returns the count of registrations grouped by gender, optionally filtered by year or programme")
 def get_registrations_by_gender(
-    year: int = None,
-    programme: str = None,
+    year: Optional[str] = None,
+    programme: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
-    data = registration_repository.get_registrations_by_gender(db, year, programme)
+    # Process year parameter if it's a string "null"
+    year_param = None
+    if year is not None:
+        if year == "null":
+            year_param = "null"  # Special value for null year
+        else:
+            try:
+                year_param = int(year)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Year must be a valid integer or 'null'")
+    
+    data = registration_repository.get_registrations_by_gender(db, year_param, programme)
     return data
 
 # Get all registrations (with optional filters)
@@ -131,15 +175,26 @@ def get_registrations_by_gender(
          summary="Get student registrations",
          description="Returns a list of student registrations with various filter options")
 def get_registrations(
-    year: int = None,
-    programme: str = None,
-    school: str = None,
+    year: Optional[str] = None,
+    programme: Optional[str] = None,
+    school: Optional[str] = None,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db)
 ):
+    # Process year parameter if it's a string "null"
+    year_param = None
+    if year is not None:
+        if year == "null":
+            year_param = "null"  # Special value for null year
+        else:
+            try:
+                year_param = int(year)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Year must be a valid integer or 'null'")
+    
     registrations = registration_repository.get_registrations(
-        db, year, programme, school, skip, limit
+        db, year_param, programme, school, skip, limit
     )
     return registrations
 

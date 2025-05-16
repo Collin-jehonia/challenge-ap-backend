@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables
-print("Loading environment variables...")
 load_dotenv()
 
 # Database connection settings - PostgreSQL only
@@ -13,7 +12,6 @@ DATABASE_URL = os.getenv(
     "DATABASE_URL", 
     "postgresql://postgres:postgres@localhost/ium_challenge"
 )
-print(f"Using DATABASE_URL: {DATABASE_URL}")
 
 # Ensure the DATABASE_URL is for PostgreSQL
 if not DATABASE_URL.startswith("postgresql"):

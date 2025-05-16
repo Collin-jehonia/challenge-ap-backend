@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, or_
 from typing import List, Dict, Any, Optional
 
 from models import StudentRegistration
@@ -12,7 +12,15 @@ def get_total_registrations(
     """Get the total number of student registrations with optional filters"""
     query = db.query(StudentRegistration)
     
-    if year:
+    # Special handling for null year value
+    if year is None:
+        # No filter, include all records
+        pass
+    elif year == "null":
+        # Filter for null academic_year
+        query = query.filter(StudentRegistration.academic_year.is_(None))
+    else:
+        # Filter for specific year
         query = query.filter(StudentRegistration.academic_year == year)
     
     if programme:
@@ -27,7 +35,15 @@ def get_registrations_by_programme(db: Session, year: Optional[int] = None, limi
         func.count(StudentRegistration.id).label("count")
     ).group_by(StudentRegistration.programme)
     
-    if year:
+    # Special handling for null year value
+    if year is None:
+        # No filter, include all records
+        pass
+    elif year == "null":
+        # Filter for null academic_year
+        query = query.filter(StudentRegistration.academic_year.is_(None))
+    else:
+        # Filter for specific year
         query = query.filter(StudentRegistration.academic_year == year)
     
     result = query.order_by(desc("count")).limit(limit).all()
@@ -60,7 +76,15 @@ def get_top_schools(
         func.count(StudentRegistration.id).label("count")
     ).group_by(StudentRegistration.secondary_school)
     
-    if year:
+    # Special handling for null year value
+    if year is None:
+        # No filter, include all records
+        pass
+    elif year == "null":
+        # Filter for null academic_year
+        query = query.filter(StudentRegistration.academic_year.is_(None))
+    else:
+        # Filter for specific year
         query = query.filter(StudentRegistration.academic_year == year)
     
     if programme:
@@ -81,7 +105,15 @@ def get_registrations(
     """Get student registrations with optional filters"""
     query = db.query(StudentRegistration)
     
-    if year:
+    # Special handling for null year value
+    if year is None:
+        # No filter, include all records
+        pass
+    elif year == "null":
+        # Filter for null academic_year
+        query = query.filter(StudentRegistration.academic_year.is_(None))
+    else:
+        # Filter for specific year
         query = query.filter(StudentRegistration.academic_year == year)
     
     if programme:
@@ -103,7 +135,15 @@ def get_registrations_by_gender(
         func.count(StudentRegistration.id).label("count")
     ).group_by(StudentRegistration.gender)
     
-    if year:
+    # Special handling for null year value
+    if year is None:
+        # No filter, include all records
+        pass
+    elif year == "null":
+        # Filter for null academic_year
+        query = query.filter(StudentRegistration.academic_year.is_(None))
+    else:
+        # Filter for specific year
         query = query.filter(StudentRegistration.academic_year == year)
     
     if programme:
